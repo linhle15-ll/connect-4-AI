@@ -24,46 +24,6 @@ def reset_game():
     pygame.display.update()
     return board, turn, game_over
 
-# ==== Alpha-Beta Pruning Algorithm ====
-def winning_move(board: Board, turn: int):
-    """Check if a player (0 for AI, or 1 for Human) has won 
-
-    Args:
-        board (Board): Board object
-        turn (int): 0 (AI) or 1 (Human)
-
-    Returns:
-        _type_: _description_
-    """
-    curr_board = board.board
-    
-    # check horizonal range of 4 for win
-    # range of row and col is determined so that they are not out of range when increase/ decrease by i
-    for row in range(ROWS):
-        for col in range(COLS - 3): # 7 - 3 = 4
-            if all(curr_board[row][col+i] == turn for i in range(4)):
-                return True
-        
-    # check vertical range of 4 for win
-    for col in range(COLS):
-        for row in range(ROWS - 3):
-            if all(curr_board[row+i][col] == turn for i in range(4)):
-                return True
-    
-    # check positively sloped diagonal for win - decreased row, increased col
-    for col in range(COLS - 3):
-        for row in range(3, ROWS):
-            if all(curr_board[row-i][col+i] == turn for i in range(4)):
-                return True
-
-    # check negatively sloped diagonal for win - increased row, increased col
-    for col in range(COLS - 3): 
-        for row in range(ROWS - 3):
-            if all(curr_board[row+i][col+i] == turn for i in range(4)):
-                return True
-    
-    return False
-
 def get_valid_columns(board: Board):
     valid_columns = []
     for col in range(COLS):
@@ -93,7 +53,45 @@ def highlight_column(board, column):
     
     pygame.display.update()
 
-# ==== Alpha-Beta Pruning ====
+# ==== Alpha-Beta Pruning Algorithm ====
+def winning_move(board: Board, turn: int):
+    """Check if a player (0 for AI, or 1 for Human) has won 
+
+    Args:
+        board (Board): Board object
+        turn (int): 0 (AI) or 1 (Human)
+
+    Returns:
+        bool: check if the player in turn (HUMAN_TURN or AI_TURN) is the winner
+    """
+    curr_board = board.board
+    
+    # check horizonal range of 4 for win
+    # range of row and col is determined so that they are not out of range when increase/ decrease by i
+    for row in range(ROWS):
+        for col in range(COLS - 3): # 7 - 3 = 4
+            if all(curr_board[row][col+i] == turn for i in range(4)):
+                return True
+        
+    # check vertical range of 4 for win
+    for col in range(COLS):
+        for row in range(ROWS - 3):
+            if all(curr_board[row+i][col] == turn for i in range(4)):
+                return True
+    
+    # check positively sloped diagonal for win - decreased row, increased col
+    for col in range(COLS - 3):
+        for row in range(3, ROWS):
+            if all(curr_board[row-i][col+i] == turn for i in range(4)):
+                return True
+
+    # check negatively sloped diagonal for win - increased row, increased col
+    for col in range(COLS - 3): 
+        for row in range(ROWS - 3):
+            if all(curr_board[row+i][col+i] == turn for i in range(4)):
+                return True
+    
+    return False
     
 def is_termninal_node(board: Board):
     """Check if the current turn or node in the minimax tree is terminal
@@ -167,12 +165,13 @@ def score_position(board: Board, turn: int):
     
     # Score center column (connecting in center is often advantageous)
     center_col_idx= COLS // 2
+  
     # get the center columnn values
     center_col = [curr_board[row][center_col_idx] for row in range(ROWS)]
     center_count = center_col.count(turn)
     score += center_count * 4
 
-    # score for horizonal, range of 4 ###### QUESTION: why for col in range before row in range in winning_move
+    # score for horizonal, range of 4 
     for row in range(ROWS):
         for col in range(COLS - 3): # 7 - 3 = 4
             window = [curr_board[row][col+i] for i in range(4)]
@@ -199,7 +198,7 @@ def score_position(board: Board, turn: int):
     return score
 
 def alpha_beta_pruning(board: Board, depth: int, player_turn: int, alpha: float, beta: float):
-    """_summary_
+    """Implement Alpha-Beta Pruning Algorithm
 
     Args:
         board (Board): board that is active
@@ -217,7 +216,7 @@ def alpha_beta_pruning(board: Board, depth: int, player_turn: int, alpha: float,
             return (None, HIGHEST_SCORE)
         elif winning_move(board, HUMAN_TURN):  # if Human has won
             return (None, LOWEST_SCORE)
-        else:
+        else: # if draw
             return (None, 0)
     
     # if depth == 0, simply score the current board
@@ -233,7 +232,7 @@ def alpha_beta_pruning(board: Board, depth: int, player_turn: int, alpha: float,
         # use copy of board, run alpha beta pruning 
         # imagine from a board version, we have different scenerios leading different game states for different ways of placing disc to different columns
         for column in valid_columns:
-            board_copy = board.copy() ##### A copy of current copy here
+            board_copy = board.copy() # A copy of current copy 
             row = board.get_next_open_row(column)
             board_copy.place_value(row, column, AI_TURN) # place turn value in the simulated space of current board
             
@@ -287,7 +286,7 @@ if __name__ == "__main__":
     pygame.display.update()
     my_font = pygame.font.SysFont("Arial", 75, bold=True)
     
-    # Game loop that runs while game is not over (GAME_OVER == False) (i.e, noone has placed 4 in a row/col/horizontal axis yet)
+    # Game loop that runs while game is not over (GAME_OVER == False) (i.e, none has placed 4 in a row/col/horizontal axis yet)
     running = True
     last_hovered_col = -1  # Track last highlighted column
     
