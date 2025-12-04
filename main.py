@@ -105,9 +105,10 @@ def is_termninal_node(board: Board):
     """
     valid_columns = get_valid_columns(board)
 
+    # terminal if someone has won or there are no valid columns left
     return (winning_move(board, HUMAN_TURN) or 
-            winning_move(board, AI_TURN) or 
-            valid_columns == 0)
+        winning_move(board, AI_TURN) or 
+        len(valid_columns) == 0)
     
 def evaluate_window(window, turn:int):
     """ Evaluatation function
@@ -131,8 +132,9 @@ def evaluate_window(window, turn:int):
     human_count = window.count(HUMAN_TURN)
     none_count = window.count(None)
     
-    # Positive scores for AI's good positions
-    if ai_count == 4: # AI wins
+    # Positive scores for AI's good positions (scale chosen so human threats
+    # outweigh AI's similar-length threats)
+    if ai_count == 4:  # AI wins
         score += HIGHEST_SCORE
     elif ai_count == 3 and none_count == 1:
         score += 500
@@ -140,16 +142,17 @@ def evaluate_window(window, turn:int):
         score += 300
     elif ai_count == 1 and none_count == 3:
         score += 100
-     
+
     # Decrease scores if Human's good positions (threats to AI)
-    if human_count == 4: # Human wins
+    if human_count == 4:  # Human wins
         score += LOWEST_SCORE
     elif human_count == 3 and none_count == 1:
-        score -= 400
+        # Very large negative: block immediate human win should be top priority
+        score -= 1000
     elif human_count == 2 and none_count == 2:
-        score -= 300
+        score -= 700
     elif human_count == 1 and none_count == 3:
-        score -= 100
+        score -= 300
     
     return score
 
@@ -169,7 +172,7 @@ def score_position(board: Board, turn: int):
     # get the center columnn values
     center_col = [curr_board[row][center_col_idx] for row in range(ROWS)]
     center_count = center_col.count(turn)
-    score += center_count * 4
+    score += center_count * 100
 
     # score for horizonal, range of 4 
     for row in range(ROWS):

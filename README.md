@@ -21,6 +21,12 @@ _Human player wins after connecting 4 discs_
 
 _AI player wins after connecting 4 discs_
 
+![AI wins 1](public/Ai_wins_1.gif)
+![AI wins 2](public/Ai_wins_2.gif)
+<!-- /Users/ngoclinhle/MHC STUDY/Fall 2025/COMSC-334 AI/final-project-connect4/public/Ai wins 1.mov -->
+
+_AI wins even in more complicated board positions_
+
 **Note**
 
 - First player is assigned on random: if `turn == AI_TURN`, then it is AI playing first, else if `turn == HUMAN_TURN`, then it is Human playing first.
@@ -125,6 +131,9 @@ source activate.sh
 
 # Run the game
 python3 main.py
+
+# Or if you have entered the virtual environment but you have problem run main file, try this instead
+venv/bin/python3 main.py
 ```
 
 ## How to Play
