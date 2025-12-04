@@ -29,11 +29,14 @@ DISC_RADIUS = 45
 # Game states
 AI_TURN = 0
 HUMAN_TURN = 1
-HIGHEST_SCORE = 10000000
-LOWEST_SCORE = -10000000
+HIGHEST_SCORE = float("inf")
+LOWEST_SCORE = float("-inf")
 DEPTH = 4
-ALPHA = float("inf")
-BETA = float("-inf")
+# Alpha and Beta initial values for alpha-beta pruning
+# Alpha should start at -infinity (worst for maximizer)
+# Beta should start at +infinity (worst for minimizer)
+ALPHA = float("-inf")
+BETA = float("inf")
 
 """
 Rules:
