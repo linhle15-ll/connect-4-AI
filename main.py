@@ -166,13 +166,13 @@ def score_position(board: Board, turn: int):
     score = 0
     curr_board = board.board  # Get the 2D array, not a copy
     
-    # Score center column (connecting in center is often advantageous)
-    center_col_idx= COLS // 2
+    # # Score center column (connecting in center is often advantageous)
+    # center_col_idx = COLS // 2
   
-    # get the center columnn values
-    center_col = [curr_board[row][center_col_idx] for row in range(ROWS)]
-    center_count = center_col.count(turn)
-    score += center_count * 100
+    # # get the center columnn values
+    # center_col = [curr_board[row][center_col_idx] for row in range(ROWS)]
+    # center_count = center_col.count(turn)
+    # score += center_count * 100    
 
     # score for horizonal, range of 4 
     for row in range(ROWS):
